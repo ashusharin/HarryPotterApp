@@ -1,7 +1,4 @@
-package com.shusharin.harrypotterapp.data
-
-import com.shusharin.harrypotterapp.data.net.PersonCloud
-import com.shusharin.harrypotterapp.data.net.PersonsService
+package com.shusharin.harrypotterapp.data.net
 
 interface ListPersonCloudDataSource {
     suspend fun fetchListPerson(): List<PersonCloud>

@@ -9,16 +9,24 @@ interface ListPersonCacheDataSourse {
     fun saveListPerson(persons: List<PersonData>)
 
     class Base(
-        private val realmProvider : RealmProvider,
-        private val mapper: PersonDataToDbMapper
-    ) : ListPersonCacheDataSourse{
+        private val realmProvider: RealmProvider,
+        private val mapper: PersonDataToDbMapper,
+    ) : ListPersonCacheDataSourse {
         override fun fetchListPerson(): List<PersonDb> {
-            TODO("Not yet implemented")
+            realmProvider.provide().use { realm ->
+                val personsDb = realm.where(PersonDb::class.java).findAll() ?: emptyList()
+                return realm.copyFromRealm(personsDb)
+            }
         }
 
-        override fun saveListPerson(persons: List<PersonData>) {
-            TODO("Not yet implemented")
-        }
+        override fun saveListPerson(persons: List<PersonData>) =
+            realmProvider.provide().use { realm ->
+                realm.executeTransaction {
+                    persons.forEach { person ->
+                        person.mapTo(mapper, DbWrapper.Base(it))
+                    }
+                }
+            }
     }
 
 }

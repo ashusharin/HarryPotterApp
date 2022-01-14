@@ -18,6 +18,7 @@ import io.realm.Realm
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 class PotterApp : Application() {
@@ -41,6 +42,7 @@ class PotterApp : Application() {
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
         val service = retrofit.create(PersonsService::class.java)
         val cloudDataSource = ListPersonCloudDataSource.Base(service)
